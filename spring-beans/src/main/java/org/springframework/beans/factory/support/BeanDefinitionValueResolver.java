@@ -389,6 +389,7 @@ class BeanDefinitionValueResolver {
 			//从当前的容器中获取指定的引用Bean对象，如果指定的Bean没有被实例化则会递归触发引用Bean的初始化和依赖注入
 			else {
 				bean = this.beanFactory.getBean(refName);
+				// 将当前实例化对象的依赖引用对象
 				this.beanFactory.registerDependentBean(refName, this.beanName);
 			}
 			if (bean instanceof NullBean) {

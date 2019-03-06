@@ -37,6 +37,7 @@ import org.springframework.lang.Nullable;
  * @see org.springframework.beans.factory.support.RootBeanDefinition
  * @see org.springframework.beans.factory.support.ChildBeanDefinition
  */
+// spring 用BeanDefinition描述bean
 public interface BeanDefinition extends AttributeAccessor, BeanMetadataElement {
 
 	/**
@@ -44,6 +45,7 @@ public interface BeanDefinition extends AttributeAccessor, BeanMetadataElement {
 	 * <p>Note that extended bean factories might support further scopes.
 	 * @see #setScope
 	 */
+	// 生命周期：单例
 	String SCOPE_SINGLETON = ConfigurableBeanFactory.SCOPE_SINGLETON;
 
 	/**
@@ -51,6 +53,7 @@ public interface BeanDefinition extends AttributeAccessor, BeanMetadataElement {
 	 * <p>Note that extended bean factories might support further scopes.
 	 * @see #setScope
 	 */
+	// 生命周期：prototype
 	String SCOPE_PROTOTYPE = ConfigurableBeanFactory.SCOPE_PROTOTYPE;
 
 
@@ -137,6 +140,7 @@ public interface BeanDefinition extends AttributeAccessor, BeanMetadataElement {
 	 * <p>If {@code false}, the bean will get instantiated on startup by bean
 	 * factories that perform eager initialization of singletons.
 	 */
+	// 懒加载设置
 	void setLazyInit(boolean lazyInit);
 
 	/**
@@ -149,6 +153,7 @@ public interface BeanDefinition extends AttributeAccessor, BeanMetadataElement {
 	 * Set the names of the beans that this bean depends on being initialized.
 	 * The bean factory will guarantee that these beans get initialized first.
 	 */
+	// 设置bean初始化需要依赖的bean
 	void setDependsOn(@Nullable String... dependsOn);
 
 	/**
@@ -164,6 +169,7 @@ public interface BeanDefinition extends AttributeAccessor, BeanMetadataElement {
 	 * if the specified bean is not marked as an autowire candidate. As a consequence,
 	 * autowiring by name will nevertheless inject a bean if the name matches.
 	 */
+	// 作为依赖被注入时，是否作为候选，只有在通过class类型的时候才生效
 	void setAutowireCandidate(boolean autowireCandidate);
 
 	/**
@@ -176,6 +182,7 @@ public interface BeanDefinition extends AttributeAccessor, BeanMetadataElement {
 	 * <p>If this value is {@code true} for exactly one bean among multiple
 	 * matching candidates, it will serve as a tie-breaker.
 	 */
+	// 作为依赖被注入时，是否作为第一候选
 	void setPrimary(boolean primary);
 
 	/**
@@ -217,6 +224,7 @@ public interface BeanDefinition extends AttributeAccessor, BeanMetadataElement {
 	 * <p>The returned instance can be modified during bean factory post-processing.
 	 * @return the ConstructorArgumentValues object (never {@code null})
 	 */
+	// 获取构造函数的参数
 	ConstructorArgumentValues getConstructorArgumentValues();
 
 	/**
@@ -232,6 +240,7 @@ public interface BeanDefinition extends AttributeAccessor, BeanMetadataElement {
 	 * <p>The returned instance can be modified during bean factory post-processing.
 	 * @return the MutablePropertyValues object (never {@code null})
 	 */
+	// 返回属性值
 	MutablePropertyValues getPropertyValues();
 
 	/**
@@ -246,6 +255,7 @@ public interface BeanDefinition extends AttributeAccessor, BeanMetadataElement {
 	 * Set the name of the initializer method.
 	 * @since 5.1
 	 */
+	// 初始化方法名
 	void setInitMethodName(@Nullable String initMethodName);
 
 	/**
@@ -259,6 +269,7 @@ public interface BeanDefinition extends AttributeAccessor, BeanMetadataElement {
 	 * Set the name of the destroy method.
 	 * @since 5.1
 	 */
+	// 销毁方法名
 	void setDestroyMethodName(@Nullable String destroyMethodName);
 
 	/**

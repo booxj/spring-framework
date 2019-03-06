@@ -67,6 +67,8 @@ public abstract class AbstractRefreshableConfigApplicationContext extends Abstra
 	 */
 	//处理单个资源文件路径为一个字符串的情况
 	public void setConfigLocation(String location) {
+		// String CONFIG_LOCATION_DELIMITERS = ",; /t/n";
+		// 即多个资源文件路径之间用” ,; \t\n”分隔，解析成数组形式
 		setConfigLocations(StringUtils.tokenizeToStringArray(location, CONFIG_LOCATION_DELIMITERS));
 	}
 

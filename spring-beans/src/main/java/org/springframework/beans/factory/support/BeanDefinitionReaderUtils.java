@@ -157,7 +157,7 @@ public abstract class BeanDefinitionReaderUtils {
 	 * @param registry the bean factory to register with
 	 * @throws BeanDefinitionStoreException if registration failed
 	 */
-	// 将解析的BeanDefinitionHold注册到容器中
+	// TODO:spring-learning:将解析的BeanDefinitionHold注册到容器中
 	public static void registerBeanDefinition(
 			BeanDefinitionHolder definitionHolder, BeanDefinitionRegistry registry)
 			throws BeanDefinitionStoreException {

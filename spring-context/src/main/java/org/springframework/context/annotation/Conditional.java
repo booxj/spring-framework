@@ -56,6 +56,11 @@ import java.lang.annotation.Target;
  * @since 4.0
  * @see Condition
  */
+
+/**
+ * @since 4.0
+ * 按一定的条件，判断是否满足注册bean的条件
+ */
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented

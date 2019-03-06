@@ -149,8 +149,7 @@ public abstract class AbstractXmlApplicationContext extends AbstractRefreshableC
 	 * @return an array of Resource objects, or {@code null} if none
 	 * @see #getConfigLocations()
 	 */
-	// 委托模式，调用子类的获取Bean定义资源定位的方法
-	// 该方法在ClassPathXmlApplicationContext中进行实现，对于我们
+	// 委托模式，调用子类的获取Bean定义资源定位的方法该方法在ClassPathXmlApplicationContext中进行实现
 	@Nullable
 	protected Resource[] getConfigResources() {
 		return null;

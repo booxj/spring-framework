@@ -37,6 +37,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Supplier;
 
+import com.sun.xml.internal.bind.v2.TODO;
 import org.apache.commons.logging.Log;
 
 import org.springframework.beans.BeanUtils;
@@ -405,12 +406,15 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		return initializeBean(beanName, existingBean, null);
 	}
 
+	// 调用BeanPostProcessor后置处理器实例对象初始化之前的处理方法
 	@Override
 	public Object applyBeanPostProcessorsBeforeInitialization(Object existingBean, String beanName)
 			throws BeansException {
 
 		Object result = existingBean;
+		// 遍历容器为所创建的Bean添加的所有BeanPostProcessor后置处理器
 		for (BeanPostProcessor processor : getBeanPostProcessors()) {
+			//调用Bean实例所有的后置处理中的初始化前处理方法，为Bean实例对象在,初始化之前做一些自定义的处理操作
 			Object current = processor.postProcessBeforeInitialization(result, beanName);
 			if (current == null) {
 				return result;
@@ -420,12 +424,16 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		return result;
 	}
 
+	// 调用BeanPostProcessor后置处理器实例对象初始化之后的处理方法
 	@Override
 	public Object applyBeanPostProcessorsAfterInitialization(Object existingBean, String beanName)
 			throws BeansException {
 
 		Object result = existingBean;
+		// 遍历容器为所创建的Bean添加的所有BeanPostProcessor后置处理器
 		for (BeanPostProcessor processor : getBeanPostProcessors()) {
+			// 调用Bean实例所有的后置处理中的初始化后处理方法，为Bean实例对象在
+			// 初始化之后做一些自定义的处理操作
 			Object current = processor.postProcessAfterInitialization(result, beanName);
 			if (current == null) {
 				return result;
@@ -547,6 +555,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * @see #instantiateUsingFactoryMethod
 	 * @see #autowireConstructor
 	 */
+	// TODO:spring-learning:创建bean的真正方法
 	protected Object doCreateBean(final String beanName, final RootBeanDefinition mbd, final @Nullable Object[] args)
 			throws BeanCreationException {
 
@@ -557,6 +566,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			instanceWrapper = this.factoryBeanInstanceCache.remove(beanName);
 		}
 		if (instanceWrapper == null) {
+			/** 生成Bean所包含的java对象实例 **/
 			instanceWrapper = createBeanInstance(beanName, mbd, args);
 		}
 		final Object bean = instanceWrapper.getWrappedInstance();
@@ -600,6 +610,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		Object exposedObject = bean;
 		try {
 			// 将Bean实例对象封装，并且Bean定义中配置的属性值赋值给实例对象
+			/** 对Bean属性的依赖注入进行处理 **/
 			populateBean(beanName, mbd, instanceWrapper);
 			// 初始化Bean对象
 			exposedObject = initializeBean(beanName, exposedObject, mbd);
@@ -1203,6 +1214,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		// Preferred constructors for default construction?
 		ctors = mbd.getPreferredConstructors();
 		if (ctors != null) {
+			// 使用容器的自动装配特性，调用匹配的构造方法实例化
 			return autowireConstructor(beanName, mbd, ctors, null);
 		}
 
@@ -1298,6 +1310,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 */
 	// 使用默认的无参构造方法实例化Bean对象
 	protected BeanWrapper instantiateBean(final String beanName, final RootBeanDefinition mbd) {
+		// 使用默认的实例化策略对Bean进行实例化，默认的实例化策略是CglibSubclassingInstantiationStrategy,及Cglib
 		try {
 			Object beanInstance;
 			final BeanFactory parent = this;

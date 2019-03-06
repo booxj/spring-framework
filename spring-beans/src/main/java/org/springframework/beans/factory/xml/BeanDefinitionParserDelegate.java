@@ -449,6 +449,7 @@ public class BeanDefinitionParserDelegate {
 			if (!StringUtils.hasText(beanName)) {
 				try {
 					if (containingBean != null) {
+						// 如果<Bean>元素中没有配置id、别名或者name，且没有包含子元素<Bean>元素，为解析的Bean生成一个唯一beanName并注册
 						beanName = BeanDefinitionReaderUtils.generateBeanName(
 								beanDefinition, this.readerContext.getRegistry(), true);
 					}
@@ -457,6 +458,7 @@ public class BeanDefinitionParserDelegate {
 						// Register an alias for the plain bean class name, if still possible,
 						// if the generator returned the class name plus a suffix.
 						// This is expected for Spring 1.2/2.0 backwards compatibility.
+						// 为解析的Bean使用别名注册时，为了向后兼容Spring1.2/2.0，给别名添加类名后缀
 						String beanClassName = beanDefinition.getBeanClassName();
 						if (beanClassName != null &&
 								beanName.startsWith(beanClassName) && beanName.length() > beanClassName.length() &&
@@ -733,6 +735,7 @@ public class BeanDefinitionParserDelegate {
 		NodeList nl = beanEle.getChildNodes();
 		for (int i = 0; i < nl.getLength(); i++) {
 			Node node = nl.item(i);
+			// 如果子元素是<property>子元素，则调用解析<property>子元素方法解析
 			if (isCandidateElement(node) && nodeNameEquals(node, PROPERTY_ELEMENT)) {
 				parsePropertyElement((Element) node, bd);
 			}
@@ -994,11 +997,12 @@ public class BeanDefinitionParserDelegate {
 		}
 		// 如果当前<property>元素还有子元素
 		else if (subElement != null) {
-			//解析<property>的子元素
+			// 解析<property>的子元素
 			return parsePropertySubElement(subElement, bd);
 		}
 		else {
 			// Neither child element nor "ref" or "value" attribute found.
+			// propery 属性中既不是ref，也不是value 属性，解析出错返回null
 			error(elementName + " must specify a ref or value", ele);
 			return null;
 		}
@@ -1034,10 +1038,12 @@ public class BeanDefinitionParserDelegate {
 		// 如果子元素是ref，ref中只能有以下3个属性：bean、local、parent
 		else if (nodeNameEquals(ele, REF_ELEMENT)) {
 			// A generic reference to any name of any bean.
+			// 可以不再同一个Spring 配置文件中，具体请参考Spring 对ref 的配置规则
 			String refName = ele.getAttribute(BEAN_REF_ATTRIBUTE);
 			boolean toParent = false;
 			if (!StringUtils.hasLength(refName)) {
 				// A reference to the id of another bean in a parent context.
+				// 获取<property>元素中parent 属性值，引用父级容器中的Bean
 				refName = ele.getAttribute(PARENT_REF_ATTRIBUTE);
 				toParent = true;
 				if (!StringUtils.hasLength(refName)) {

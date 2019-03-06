@@ -102,7 +102,7 @@ asciidoctor {
 			revnumber: project.version,
 			sectanchors: '',
 			sectnums: '',
-			'source-highlighter': 'coderay@', // TODO switch to 'rouge' once supported by the html5 backend
+			'source-highlighter': 'coderay@',
 			stylesdir: 'stylesheets/',
 			stylesheet: 'main.css',
 			'spring-version': project.version

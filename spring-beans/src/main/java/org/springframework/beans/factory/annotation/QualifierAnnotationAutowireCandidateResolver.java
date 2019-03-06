@@ -168,6 +168,7 @@ public class QualifierAnnotationAutowireCandidateResolver extends GenericTypeAwa
 			return true;
 		}
 		SimpleTypeConverter typeConverter = new SimpleTypeConverter();
+		// 遍历注解
 		for (Annotation annotation : annotationsToSearch) {
 			Class<? extends Annotation> type = annotation.annotationType();
 			boolean checkMeta = true;
@@ -262,6 +263,7 @@ public class QualifierAnnotationAutowireCandidateResolver extends GenericTypeAwa
 			}
 		}
 
+		// 获取Qualifier注解的属性
 		Map<String, Object> attributes = AnnotationUtils.getAnnotationAttributes(annotation);
 		if (attributes.isEmpty() && qualifier == null) {
 			// If no attributes, the qualifier must be present
