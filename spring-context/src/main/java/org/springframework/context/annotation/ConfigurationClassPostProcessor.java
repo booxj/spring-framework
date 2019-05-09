@@ -83,6 +83,15 @@ import static org.springframework.context.annotation.AnnotationConfigUtils.CONFI
  * @author Phillip Webb
  * @since 3.0
  */
+
+/**
+ * @description：用于处理配置类 实现 BeanDefinitionRegistryPostProcessor 接口，在加载后 实例化前 执行
+ * <p>
+ * 执行顺序
+ * · BeanDefinitionRegistryPostProcessor + PriorityOrdered
+ * · BeanDefinitionRegistryPostProcessor + Ordered
+ * · 剩余BeanDefinitionRegistryPostProcessor
+ */
 public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPostProcessor,
 		PriorityOrdered, ResourceLoaderAware, BeanClassLoaderAware, EnvironmentAware {
 
@@ -178,9 +187,10 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 	 * {@code AnnotationConfig*} application contexts or the {@code
 	 * <context:annotation-config>} element. Any bean name generator specified against
 	 * the application context will take precedence over any value set here.
-	 * @since 3.1.1
+	 *
 	 * @see AnnotationConfigApplicationContext#setBeanNameGenerator(BeanNameGenerator)
 	 * @see AnnotationConfigUtils#CONFIGURATION_BEAN_NAME_GENERATOR
+	 * @since 3.1.1
 	 */
 	public void setBeanNameGenerator(BeanNameGenerator beanNameGenerator) {
 		Assert.notNull(beanNameGenerator, "BeanNameGenerator must not be null");
@@ -214,6 +224,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 
 
 	/**
+	 * 处理被 @Configuration 注解的Class
 	 * Derive further bean definitions from the configuration classes in the registry.
 	 */
 	@Override
@@ -255,6 +266,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 	}
 
 	/**
+	 * 构建和验证一个 configuration 到 BeanDefinition
 	 * Build and validate a configuration model based on the registry of
 	 * {@link Configuration} classes.
 	 */
@@ -269,8 +281,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 				if (logger.isDebugEnabled()) {
 					logger.debug("Bean definition has already been processed as a configuration class: " + beanDef);
 				}
-			}
-			else if (ConfigurationClassUtils.checkConfigurationClassCandidate(beanDef, this.metadataReaderFactory)) {
+			} else if (ConfigurationClassUtils.checkConfigurationClassCandidate(beanDef, this.metadataReaderFactory)) {
 				configCandidates.add(new BeanDefinitionHolder(beanDef, beanName));
 			}
 		}
@@ -304,6 +315,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 			this.environment = new StandardEnvironment();
 		}
 
+		// ConfigurationClassParser 用来解析被 @Configuration 修饰过的类
 		// Parse each @Configuration class
 		ConfigurationClassParser parser = new ConfigurationClassParser(
 				this.metadataReaderFactory, this.problemReporter, this.environment,
@@ -365,6 +377,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 	 * Post-processes a BeanFactory in search of Configuration class BeanDefinitions;
 	 * any candidates are then enhanced by a {@link ConfigurationClassEnhancer}.
 	 * Candidate status is determined by BeanDefinition attribute metadata.
+	 *
 	 * @see ConfigurationClassEnhancer
 	 */
 	public void enhanceConfigurationClasses(ConfigurableListableBeanFactory beanFactory) {
@@ -375,8 +388,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 				if (!(beanDef instanceof AbstractBeanDefinition)) {
 					throw new BeanDefinitionStoreException("Cannot enhance @Configuration bean definition '" +
 							beanName + "' since it is not stored in an AbstractBeanDefinition subclass");
-				}
-				else if (logger.isInfoEnabled() && beanFactory.containsSingleton(beanName)) {
+				} else if (logger.isInfoEnabled() && beanFactory.containsSingleton(beanName)) {
 					logger.info("Cannot enhance @Configuration bean definition '" + beanName +
 							"' since its singleton instance has been created too early. The typical cause " +
 							"is a non-static @Bean method with a BeanDefinitionRegistryPostProcessor " +
@@ -408,8 +420,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 						beanDef.setBeanClass(enhancedClass);
 					}
 				}
-			}
-			catch (Throwable ex) {
+			} catch (Throwable ex) {
 				throw new IllegalStateException("Cannot load configuration class: " + beanDef.getBeanClassName(), ex);
 			}
 		}
@@ -435,7 +446,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 		}
 
 		@Override
-		public Object postProcessBeforeInitialization(Object bean, String beanName)  {
+		public Object postProcessBeforeInitialization(Object bean, String beanName) {
 			if (bean instanceof ImportAware) {
 				ImportRegistry ir = this.beanFactory.getBean(IMPORT_REGISTRY_BEAN_NAME, ImportRegistry.class);
 				AnnotationMetadata importingClass = ir.getImportingClassFor(bean.getClass().getSuperclass().getName());

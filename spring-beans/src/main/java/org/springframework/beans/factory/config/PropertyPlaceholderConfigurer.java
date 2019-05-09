@@ -56,6 +56,11 @@ import org.springframework.util.StringValueResolver;
  * @see PropertyOverrideConfigurer
  * @see org.springframework.context.support.PropertySourcesPlaceholderConfigurer
  */
+
+/**
+ * 继承 BeanFactoryPostProcessor
+ * 功能：用配置替换占位符
+ */
 public class PropertyPlaceholderConfigurer extends PlaceholderConfigurerSupport {
 
 	/** Never check system properties. */

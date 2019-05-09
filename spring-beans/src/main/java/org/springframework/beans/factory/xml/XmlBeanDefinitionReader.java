@@ -319,6 +319,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 			logger.trace("Loading XML bean definitions from " + encodedResource);
 		}
 
+		// 获取已经加载过的资源
 		Set<EncodedResource> currentResources = this.resourcesCurrentlyBeingLoaded.get();
 		if (currentResources == null) {
 			currentResources = new HashSet<>(4);
@@ -329,9 +330,11 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 					"Detected cyclic loading of " + encodedResource + " - check your import definitions!");
 		}
 		try {
+			// 从 EncodedResource 获取封装的 Resource 并从 Resource 中获取其中的 InputStream
 			InputStream inputStream = encodedResource.getResource().getInputStream();
 			try {
 				InputSource inputSource = new InputSource(inputStream);
+				// 设置编码
 				if (encodedResource.getEncoding() != null) {
 					inputSource.setEncoding(encodedResource.getEncoding());
 				}

@@ -78,6 +78,7 @@ class ConditionEvaluator {
 	 * @return if the item should be skipped
 	 */
 	public boolean shouldSkip(@Nullable AnnotatedTypeMetadata metadata, @Nullable ConfigurationPhase phase) {
+		// 1.判断类是否含有@Conditional注解，否则直接返回
 		if (metadata == null || !metadata.isAnnotated(Conditional.class.getName())) {
 			return false;
 		}
@@ -90,6 +91,7 @@ class ConditionEvaluator {
 			return shouldSkip(metadata, ConfigurationPhase.REGISTER_BEAN);
 		}
 
+		// 2.获取类上所有含有@Conditional注解的value集合(其会递归找寻注解的注解)
 		List<Condition> conditions = new ArrayList<>();
 		for (String[] conditionClasses : getConditionClasses(metadata)) {
 			for (String conditionClass : conditionClasses) {
@@ -98,8 +100,10 @@ class ConditionEvaluator {
 			}
 		}
 
+		// 3.根据Order来进行排序
 		AnnotationAwareOrderComparator.sort(conditions);
 
+		// 4.对集合内的condition统一调用matches()方法,一旦遇到条件判断不满足的则返回true对此注解类元素进行忽略
 		for (Condition condition : conditions) {
 			ConfigurationPhase requiredPhase = null;
 			if (condition instanceof ConfigurationCondition) {

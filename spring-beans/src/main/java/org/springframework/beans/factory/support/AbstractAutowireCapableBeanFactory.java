@@ -1817,6 +1817,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 */
 	// 初始容器创建的Bean实例对象，为其添加BeanPostProcessor后置处理器
 	protected Object initializeBean(final String beanName, final Object bean, @Nullable RootBeanDefinition mbd) {
+		// TODO:  激活Aware
 		// JDK的安全机制验证权限
 		if (System.getSecurityManager() != null) {
 			// 实现PrivilegedAction接口的匿名内部类
@@ -1831,12 +1832,14 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 		Object wrappedBean = bean;
+		// TODO: 前置处理
 		// 对BeanPostProcessor后置处理器的postProcessBeforeInitialization
 		// 回调方法的调用，为Bean实例初始化前做一些处理
 		if (mbd == null || !mbd.isSynthetic()) {
 			wrappedBean = applyBeanPostProcessorsBeforeInitialization(wrappedBean, beanName);
 		}
 
+		// TODO: 初始化
 		// 调用Bean实例对象初始化的方法，这个初始化方法是在Spring Bean定义配置
 		// 文件中通过init-method属性指定的
 		try {
@@ -1847,6 +1850,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 					(mbd != null ? mbd.getResourceDescription() : null),
 					beanName, "Invocation of init method failed", ex);
 		}
+		// TODO: 后置处理
 		// 对BeanPostProcessor后置处理器的postProcessAfterInitialization回调方法的调用，为Bean实例初始化之后做一些处理
 		if (mbd == null || !mbd.isSynthetic()) {
 			wrappedBean = applyBeanPostProcessorsAfterInitialization(wrappedBean, beanName);
@@ -1887,6 +1891,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	protected void invokeInitMethods(String beanName, final Object bean, @Nullable RootBeanDefinition mbd)
 			throws Throwable {
 
+		// 是否实现 InitializingBean
+		// 如果实现了 InitializingBean 接口，则只掉调用bean的 afterPropertiesSet()
 		boolean isInitializingBean = (bean instanceof InitializingBean);
 		if (isInitializingBean && (mbd == null || !mbd.isExternallyManagedInitMethod("afterPropertiesSet"))) {
 			if (logger.isTraceEnabled()) {
@@ -1904,15 +1910,19 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				}
 			}
 			else {
+				// 直接调用 afterPropertiesSet()
 				((InitializingBean) bean).afterPropertiesSet();
 			}
 		}
 
 		if (mbd != null && bean.getClass() != NullBean.class) {
+			// 判断是否指定了 init-method()，
+			// 如果指定了 init-method()，则再调用制定的init-method
 			String initMethodName = mbd.getInitMethodName();
 			if (StringUtils.hasLength(initMethodName) &&
 					!(isInitializingBean && "afterPropertiesSet".equals(initMethodName)) &&
 					!mbd.isExternallyManagedInitMethod(initMethodName)) {
+				// 利用反射机制执行
 				invokeCustomInitMethod(beanName, bean, mbd);
 			}
 		}

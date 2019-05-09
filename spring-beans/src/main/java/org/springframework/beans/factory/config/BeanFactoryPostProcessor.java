@@ -42,6 +42,10 @@ import org.springframework.beans.BeansException;
  * @see BeanPostProcessor
  * @see PropertyResourceConfigurer
  */
+
+/**
+ * bean 实例化之前最后一次修改 BeanDefinition 的机会
+ */
 @FunctionalInterface
 public interface BeanFactoryPostProcessor {
 

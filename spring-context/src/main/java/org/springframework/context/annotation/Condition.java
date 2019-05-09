@@ -16,7 +16,6 @@
 
 package org.springframework.context.annotation;
 
-import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.core.type.AnnotatedTypeMetadata;
 
 /**
@@ -38,7 +37,13 @@ import org.springframework.core.type.AnnotatedTypeMetadata;
  * @see Conditional
  * @see ConditionContext
  */
-@FunctionalInterface
+
+/**
+ * Condition 用来实现是否被注册到 spring IOC 容器的逻辑，需要重写 matches() 方法
+ * Condition 会在 BeanDefinition 被加载前被执行,
+ * 通常使用 ConfigurationCondition 和 BeanFactoryPostProcessor 配合完成
+ */
+@FunctionalInterface	//java8 新增的注解，用于该类需要满足函数式编程
 public interface Condition {
 
 	/**

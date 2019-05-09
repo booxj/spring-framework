@@ -40,6 +40,10 @@ import org.springframework.lang.Nullable;
  * @see ConfigurableBeanFactory#addBeanPostProcessor
  * @see BeanFactoryPostProcessor
  */
+
+/**
+ * IOC 初始化过程中的可扩展点，可以在bean实例化的前后进行增强处理
+ */
 public interface BeanPostProcessor {
 
 	/**
